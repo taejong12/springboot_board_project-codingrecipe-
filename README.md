@@ -22,6 +22,16 @@
    - 게시글 14
      - 한페이지에 5개씩 => 3개
      - 한페이지에 3개씩 => 5개
+7. 파일(이미지) 첨부하기
+    - 단일 파일 첨부
+    - 다중 파일 첨부
+    - 파일 첨부와 관련하여 추가될 부분들
+      - save.html
+      - BoardDTO
+      - BoardService.save()
+      - BoardEntity
+      - BoardFileEntity, BoardFileRepository  추가
+      - detail.html
 
 ## mysql DataBase 계정 생성 및 권한 부여
 ```
@@ -29,3 +39,8 @@
  create user user_codingrecipe@localhost identified by '1234';
  grant all privileges on db_codingrecipe.* to user_codingrecipe@localhost;
 ```
+
+-board_table(부모) - board_file_table(자식)
+
+on delete cascade
+부모 삭제시 자식도 삭제
