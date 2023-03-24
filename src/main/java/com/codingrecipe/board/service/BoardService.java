@@ -40,6 +40,8 @@ public class BoardService {
             boardRepository.save(boardEntity);
         } else {
             // 첨부 파일 있음.
+            
+            // 단일 파일 첨부
             // 1. DTO에 담긴 파일을 꺼냄
             // 2. 파일의 이름 가져옴
             // 3. 서버 저장용 이름으로 수정
@@ -48,19 +50,36 @@ public class BoardService {
             // 6. board_table에 해당 데이터 save 처리
             // 7. board_file_table에 해당 데이터 save 처리
 
-            MultipartFile boardFile = boardDTO.getBoardFile(); // 1.
-            String originalFileName = boardFile.getOriginalFilename(); // 2.
-            // uuid 도 사용
-            String storedFileName = System.currentTimeMillis() + "_" + originalFileName; // 3.
-            String savePath = "C:\\board\\src\\main\\resources\\static\\images\\"+storedFileName; // 4.
-            boardFile.transferTo(new File(savePath)); // 5.
+//            MultipartFile boardFile = boardDTO.getBoardFile(); // 1.
+//            String originalFileName = boardFile.getOriginalFilename(); // 2.
+//            // uuid 도 사용
+//            String storedFileName = System.currentTimeMillis() + "_" + originalFileName; // 3.
+//            String savePath = "C:\\board\\src\\main\\resources\\static\\images\\"+storedFileName; // 4.
+//            boardFile.transferTo(new File(savePath)); // 5.
+//
+//            BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
+//            Long savedId = boardRepository.save(boardEntity).getId();
+//            BoardEntity board = boardRepository.findById(savedId).get();
+//
+//            BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFileName, storedFileName);
+//            boardFileRepository.save(boardFileEntity);
+
+            // 다중 파일 첨부
 
             BoardEntity boardEntity = BoardEntity.toSaveFileEntity(boardDTO);
             Long savedId = boardRepository.save(boardEntity).getId();
             BoardEntity board = boardRepository.findById(savedId).get();
 
-            BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFileName, storedFileName);
-            boardFileRepository.save(boardFileEntity);
+            for(MultipartFile boardFile: boardDTO.getBoardFile()){
+                String originalFileName = boardFile.getOriginalFilename();
+                String storedFileName = System.currentTimeMillis() + "_" + originalFileName;
+                String savePath = "C:\\board\\src\\main\\resources\\static\\images\\"+storedFileName;
+                boardFile.transferTo(new File(savePath));
+                BoardFileEntity boardFileEntity = BoardFileEntity.toBoardFileEntity(board, originalFileName, storedFileName);
+                boardFileRepository.save(boardFileEntity);
+            }
+
+
         }
 
     }
